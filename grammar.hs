@@ -1,3 +1,7 @@
+-- grammar.hs is my attempt at making something like the program
+-- presented in 2.3 (pg. 39) 
+-- the idea is that the rules are specified through data types
+-- and simple functions generate productions according to the rules
 import System.Random (randomRIO)
 type Verb = String
 type Noun = String
