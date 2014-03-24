@@ -1,3 +1,3 @@
-HASKELL-PAIP
+Haskell-PAIP
 ============
-This repository holds code that I've written while reading Norvig's Paradigms of Artificial Intelligence Programming. I'm new to Haskell, so usage of this code for non-pedagogic reasons is inadvisable.
+This repository contains code I've written while reading Norvig's Paradigms of Artificial Intelligence Programming.
