@@ -2,6 +2,9 @@
 -- presented in 2.3 (pg. 39) 
 -- the idea is that the rules are specified through data types
 -- and simple functions generate productions according to the rules
+-- ideally, to change the grammar it should be sufficient to add a couple
+-- of new data types. This program falls short of reaching that goal, but
+-- may point the way to a better solution.
 import System.Random (randomRIO)
 type Verb = String
 type Noun = String
