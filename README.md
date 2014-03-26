@@ -1,6 +1,6 @@
 Haskell-PAIP
 ============
-This repository contains code I've written while reading Norvig's Paradigms of Artificial Intelligence Programming. I'd been wanting to learn Haskell, so it seemed like a fun exercise to reimplement the programs in Haskell.
+This repository contains code I've written while reading Norvig's Paradigms of Artificial Intelligence Programming. I'd been wanting to learn Haskell, so it seemed like a fun exercise to implement the programs in that language, as opposed to Scheme.
 
 Programs for Chapter 2
 ----------------------
