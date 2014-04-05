@@ -12,4 +12,12 @@ Programs for Chapter 2
 
 Programs for Chapter 4
 ----------------------
-* gps.hs - my first attempt at implementing the GPS. it has a major flaw in that the user cannot see the series of actions taken to reach the goal, but it will tell the user whether the goal is reachable or not.
+* gps.hs - my first attempt at implementing the GPS. Here is an example session, where the secret to riches and success is revealed!
+
+> *Main> let winLottery = A ("Win the lottery", Pc ["poor"], E ["rich"])
+> *Main> let getDiscovered = A ("Get discovered by talent scout", Pc ["unknown"], E ["famous"])
+> *Main> let initialW = ["poor", "unknown"]
+> *Main> let knowledge = [winLottery, getDiscovered]
+> *Main> let goal = ["rich", "famous"]
+> *Main> solve knowledge initialW goal
+> [Win the lottery,Get discovered by talent scout]
