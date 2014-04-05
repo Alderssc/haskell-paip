@@ -2,14 +2,28 @@
 -- solver
 type State = String
 type World = [State]
-type Action = (State, State)
+type Action = (Precondition,Effect)
 type Knowledge = [Action]
 
+data Precondition = Pc [State]
+data Effect = E [State]
+
+check :: Precondition -> World -> Bool
+check (Pc st) w = and (map (\x -> x `isIn` w) st)
+
 perform :: Action -> World -> World
-perform (s0,s1) w = 
-	if s0 `isIn` w
-		then addS s1 (delS s0 w)
+perform (pres, efx) w = 
+	if (check pres w)
+		then update efx (consume pres w) 
 		else w
+
+consume :: Precondition -> World -> World
+consume (Pc []) w = w
+consume (Pc (p:ps)) w = consume (Pc ps) (delS p w)
+
+update :: Effect -> World -> World
+update (E []) w = w
+update (E (e:es)) w = update (E es) (addS e w)
 
 addS :: State -> World -> World
 addS s w = w ++ [s]
@@ -23,9 +37,9 @@ isIn s w = length (filter (\x -> x == s) w) /= 0
 findSuitableAction :: Knowledge -> World -> [Action]
 findSuitableAction [] _ = []
 findSuitableAction _ [] = []
-findSuitableAction ((x,y):as) w = 
-	if x `isIn` w
-		then [(x,y)] ++ findSuitableAction as w
+findSuitableAction ((pres,efx):as) w = 
+	if (check pres w)
+		then [(pres,efx)] ++ findSuitableAction as w
 		else findSuitableAction as w
 
 reachableW :: Knowledge -> World -> [World]
