@@ -5,13 +5,16 @@ type World = [State]
 type Knowledge = [Action]
 type Goal = [State]
 
-data Action = A (String, Precondition, Effect) 
+data Action = A (String, Precondition, Effect) | NoAction 
 data Precondition = Pc [State] deriving (Show)
 data Effect = E [State] deriving (Show)
 
 instance Show Action where
 		show (A (s, Pc x, E y)) = s
 instance Eq Action where
+		(==) NoAction (A _) = False
+		(==) (A _) NoAction = False
+		(==) NoAction NoAction = True
 		(==) (A (sa, Pc xa, E ya)) (A (sb, Pc xb, E yb)) = and [(sa == sb), (xa == xb), (ya == yb)]
 
 check :: Precondition -> World -> Bool
@@ -64,7 +67,7 @@ solvable k w g
   | otherwise = or (map (\x -> solvable k x g) (expand k w))
 
 bestMove :: [Action] -> Knowledge -> World -> Goal -> Action
-bestMove [] k w g = A ("There is no best action!", Pc [], E [])
+bestMove [] k w g = NoAction
 bestMove (a:as) k w g
 	| isWinner a k w g = a
 	| otherwise = bestMove as k w g
@@ -72,7 +75,7 @@ bestMove (a:as) k w g
 solve :: Knowledge -> World -> Goal -> [Action]
 solve k w g
   | goalReached g w = []
-	| (bestMove (findSuitableAction k w) k w g) == A ("There is no best action!", Pc [], E[]) = []
+	| (bestMove (findSuitableAction k w) k w g) == NoAction = []
 	| otherwise = [bestMove (findSuitableAction k w) k w g] ++ (solve k (perform (bestMove (findSuitableAction k w) k w g) w) g)
 
 isWinner :: Action -> Knowledge -> World -> Goal -> Bool
