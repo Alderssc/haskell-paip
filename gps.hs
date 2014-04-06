@@ -10,7 +10,8 @@ data Precondition = Pc [State] deriving (Show)
 data Effect = E [State] deriving (Show)
 
 instance Show Action where
-		show (A (s, Pc x, E y)) = s
+	show NoAction = "Do nothing"	
+	show (A (s, Pc x, E y)) = s
 instance Eq Action where
 		(==) NoAction (A _) = False
 		(==) (A _) NoAction = False
@@ -21,6 +22,7 @@ check :: Precondition -> World -> Bool
 check (Pc st) w = and (map (\x -> x `isIn` w) st)
 
 perform :: Action -> World -> World
+perform NoAction w = w
 perform (A (name, pres, efx)) w
 	| check pres w = update efx (consume pres w)
 	| otherwise = w
@@ -43,6 +45,7 @@ isIn :: State -> World -> Bool
 isIn s w = length (filter (\x -> x == s) w) /= 0
 
 getPreconds :: Action -> Precondition
+getPreconds NoAction = Pc []
 getPreconds (A (name, Pc ps, E efx)) = Pc ps
 
 rest :: [a] -> [a]
@@ -50,7 +53,7 @@ rest (a:as) = as
 
 findSuitableAction :: Knowledge -> World -> [Action]
 findSuitableAction actions world
-		| or [actions == [], world == []] = []
+		| or [actions == [], world == []] = [NoAction]
 		| check (getPreconds (actions !! 0)) world = [actions !! 0] ++ findSuitableAction (rest actions) world
 		| otherwise = findSuitableAction (rest actions) world
 
@@ -67,18 +70,19 @@ solvable k w g
   | otherwise = or (map (\x -> solvable k x g) (expand k w))
 
 bestMove :: [Action] -> Knowledge -> World -> Goal -> Action
-bestMove [] k w g = NoAction
+bestMove [] _ _ _ = NoAction
 bestMove (a:as) k w g
 	| isWinner a k w g = a
 	| otherwise = bestMove as k w g
 
 solve :: Knowledge -> World -> Goal -> [Action]
 solve k w g
-  | goalReached g w = []
-	| (bestMove (findSuitableAction k w) k w g) == NoAction = []
+  | goalReached g w = [NoAction]
+	| (bestMove (findSuitableAction k w) k w g) == NoAction = [NoAction]
 	| otherwise = [bestMove (findSuitableAction k w) k w g] ++ (solve k (perform (bestMove (findSuitableAction k w) k w g) w) g)
 
 isWinner :: Action -> Knowledge -> World -> Goal -> Bool
+isWinner NoAction _ _ _ = False
 isWinner a k w g = solvable k (perform a w) g
 
 winLottery = A ("Win the lottery", Pc ["poor"], E ["rich"])
